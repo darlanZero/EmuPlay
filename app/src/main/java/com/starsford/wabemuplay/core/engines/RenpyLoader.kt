@@ -1,18 +1,34 @@
 package com.starsford.wabemuplay.core.engines
 
 import android.content.Context
+import android.content.Intent
+import android.util.Log
+import com.starsford.wabemuplay.core.disk.EngineType
+import com.starsford.wabemuplay.core.disk.GameFile
+import com.starsford.wabemuplay.interfaces.GameLoader
 
-class RenpyLoader(context: Context) {
-    fun loadGame(gamePath: String): Boolean {
-        // Logic to load a Ren'Py game from the specified path
-        // This is a placeholder implementation
+class RenpyLoader : GameLoader {
+    override fun loadGame(context: Context, gameFile: GameFile): Boolean {
         return try {
-            // Simulate loading the game
-            println("Loading Ren'Py game from: $gamePath")
+            val gamePath = gameFile.path
+            // Você precisa criar a RenpyActivity ou usar uma activity existente
+            val intent = Intent().apply {
+                setClassName(context, "com.starsford.wabemuplay.activities.RenpyActivity")
+                putExtra("GAME_PATH", gamePath)
+            }
+            context.startActivity(intent)
             true
         } catch (e: Exception) {
-            println("Failed to load Ren'Py game: ${e.message}")
+            Log.e("RenpyLoader", "Failed to load game: ${e.message}")
             false
         }
+    }
+
+    override fun isSupported(gameFile: GameFile): Boolean {
+        return gameFile.engineType == EngineType.RENPY
+    }
+
+    override fun getEngineName(): String {
+        return "RenPy"
     }
 }
